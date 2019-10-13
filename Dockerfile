@@ -1,0 +1,12 @@
+FROM openjdk:12
+
+ENV VERTICLE_FILE arp-workshop-1.0.0-SNAPSHOT.jar
+ENV VERTICLE_HOME /usr/verticles
+
+EXPOSE 8080
+
+COPY target/$VERTICLE_FILE $VERTICLE_HOME/
+
+WORKDIR $VERTICLE_HOME
+ENTRYPOINT ["sh", "-c"]
+CMD ["exec java -jar $VERTICLE_FILE"]

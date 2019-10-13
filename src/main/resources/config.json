@@ -1,0 +1,14 @@
+{
+    "port": 8080,
+    "db": {
+        "host": "localhost",
+        "db": "postgres",
+        "user": "postgres",
+        "pass": "docker"
+    },
+    "api": {
+        "host": "www.metaweather.com",
+        "port": 443,
+        "ssl": true
+    }
+}
