@@ -1,6 +1,8 @@
 package com.mindera.arp_workshop;
 
-import com.mindera.arp_workshop.htto.HelloVerticle;
+import com.mindera.arp_workshop.api.WeatherAPI;
+import com.mindera.arp_workshop.db.DbClient;
+import com.mindera.arp_workshop.htto.WeatherVerticle;
 import com.mindera.arp_workshop.htto.HttpServerVerticle;
 import com.mindera.arp_workshop.utils.Loggable;
 import io.reactivex.Completable;
@@ -26,7 +28,9 @@ public class MainVerticle extends AbstractVerticle implements Loggable {
         var router = Router.router(vertx);
 
         return Observable.fromArray(
-            new HelloVerticle(router),
+            new DbClient(),
+            new WeatherAPI(),
+            new WeatherVerticle(router),
             new HttpServerVerticle(router)
         )
             .flatMapSingle(verticle -> deployVerticle(config, verticle))
