@@ -30,8 +30,8 @@ public class CreatingObservableStreams {
         Observable.just("Foo", "Bar")
             .subscribe(mSubscriber);
 
-        mSubscriber.assertValueCount(____);
-        mSubscriber.assertValues(_____, _____);
+        mSubscriber.assertValueCount(2);
+        mSubscriber.assertValues("Foo", "Bar");
     }
 
     @Test
@@ -45,9 +45,9 @@ public class CreatingObservableStreams {
             .subscribe(mSubscriber);
 
         mSubscriber.awaitTerminalEvent();
-        assertThat(mCount1).isEqualTo(____);
-        assertThat(mCount2).isEqualTo(____);
-        assertThat(mCount3).isEqualTo(____);
+        assertThat(mCount1).isEqualTo(5);
+        assertThat(mCount2).isEqualTo(1);
+        assertThat(mCount3).isEqualTo(0);
     }
 
     @Test
@@ -57,15 +57,15 @@ public class CreatingObservableStreams {
         String stoogeThree = "Curly";
         Integer stoogeAge = 38;
 
-        Observable<Object> stoogeDataObservable = Observable.just(_____, _____, _____, _____);
+        Observable<Object> stoogeDataObservable = Observable.just(stoogeOne, stoogeTwo, stoogeThree, stoogeAge);
         stoogeDataObservable.subscribe(mSubscriber);
 
         List<Object> events = mSubscriber.values();
-        assertThat(events).containsOnlyOnce(_____);
-        assertThat(events).containsOnlyOnce(_____);
-        assertThat(events).containsOnlyOnce(_____);
-        assertThat(events).containsOnlyOnce(_____);
-        assertThat(events).hasSize(____);
+        assertThat(events).containsOnlyOnce(stoogeOne);
+        assertThat(events).containsOnlyOnce(stoogeTwo);
+        assertThat(events).containsOnlyOnce(stoogeThree);
+        assertThat(events).containsOnlyOnce(stoogeAge);
+        assertThat(events).hasSize(4);
     }
 
     @Test
@@ -76,14 +76,14 @@ public class CreatingObservableStreams {
 
         TestObserver<Object> subscriber = new TestObserver<>();
         favoriteFoodsObservable.subscribe(subscriber);
-        assertThat(subscriber.values()).hasSize(____);
-        assertThat(subscriber.values()).contains(_____);
-//    assertThat(subscriber.values()).containsAll(_____);
+        assertThat(subscriber.values()).hasSize(sandwichIngredients.size());
+//        assertThat(subscriber.values()).contains(sandwichIngredients);
+        assertThat(subscriber.values()).containsAll(sandwichIngredients);
 
         subscriber = new TestObserver<>();
         Observable.just(sandwichIngredients).subscribe(subscriber);
-        assertThat(subscriber.values()).hasSize(____);
-        assertThat(subscriber.values()).contains(_____);
+        assertThat(subscriber.values()).hasSize(1);
+        assertThat(subscriber.values()).contains(sandwichIngredients);
     }
 
     @Test
@@ -92,7 +92,8 @@ public class CreatingObservableStreams {
 
         Observable
             .range(1, 10)
-            .doOnNext(integer -> mSum += integer);
+            .doOnNext(integer -> mSum += integer)
+            .subscribe();
 
         assertThat(mSum).isEqualTo(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10);
     }

@@ -1,12 +1,16 @@
 package com.mindera.arp_workshop.rxjava;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.mindera.arp_workshop.rxjava.util.LessonResources.CarnivalFood;
 import com.mindera.arp_workshop.rxjava.util.LessonResources.ElevatorPassenger;
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,9 +37,9 @@ public class MapAndFlatMapAndBasicOperators {
             .map(word -> word.replace("l", "1"))
             .subscribe(mObserver);
 
-        assertThat(mObserver.values()).contains(_____);
-        assertThat(mObserver.values()).contains(_____);
-        assertThat(mObserver.values()).contains(_____);
+        assertThat(mObserver.values()).contains("k3w1");
+        assertThat(mObserver.values()).contains("133t");
+        assertThat(mObserver.values()).contains("sp3ak");
     }
 
     @Test
@@ -59,13 +63,13 @@ public class MapAndFlatMapAndBasicOperators {
             .map(Observable::fromIterable)
             .subscribe(mObserver);
 
-        assertThat(mObserver.values()).hasSize(____);
+        assertThat(mObserver.values()).hasSize(2);
 
         mObserver = new TestObserver<>();
         Observable<CarnivalFood> individualItemsObservable = foodCartItemsObservable
             .flatMap(Observable::fromIterable);
         individualItemsObservable.subscribe(mObserver);
-        assertThat(mObserver.values()).hasSize(____);
+        assertThat(mObserver.values()).hasSize(11);
 
         mObserver = new TestObserver<>();
 
@@ -73,7 +77,7 @@ public class MapAndFlatMapAndBasicOperators {
             .filter(food -> food.mPrice < 5.00)
             .subscribe(mObserver);
 
-        assertThat(mObserver.values()).hasSize(____);
+        assertThat(mObserver.values()).hasSize(7);
 
         System.out.println("With my 5 bucks I can buy: " + mObserver.values());
     }
@@ -96,7 +100,7 @@ public class MapAndFlatMapAndBasicOperators {
             .reduce(0, (accumulatedWeight, elevatorPassenger) -> elevatorPassenger.mWeightInPounds + accumulatedWeight)
             .subscribe(testObserver);
 
-        assertThat(testObserver.values().get(0)).isEqualTo(____);
+        assertThat(testObserver.values().get(0)).isEqualTo(168 + 234 + 192 + 142 + 114);
     }
 
     @Test
@@ -106,7 +110,7 @@ public class MapAndFlatMapAndBasicOperators {
 
         Observable<String> repeatingObservable = Observable.just(weapon).repeat(4);
         repeatingObservable.subscribe(observer);
-        assertThat(observer.values()).hasSize(____);
+        assertThat(observer.values()).hasSize(4);
 
         observer = new TestObserver<>();
 
@@ -114,7 +118,7 @@ public class MapAndFlatMapAndBasicOperators {
             .repeat(4)
             .subscribe(observer);
 
-        assertThat(observer.values()).hasSize(____);
+        assertThat(observer.values()).hasSize(16);
     }
 
     @Test
@@ -133,17 +137,18 @@ public class MapAndFlatMapAndBasicOperators {
             .doOnNext(integer -> mStringC += integer)
             .subscribe(integer -> mStringC += integer);
 
-        assertThat(mStringA).isEqualTo("____");
-        assertThat(mStringB).isEqualTo("____");
-        assertThat(mStringC).isEqualTo("____");
+        assertThat(mStringA).isEqualTo("123456");
+        assertThat(mStringB).isEqualTo("246");
+        assertThat(mStringC).isEqualTo("112233445566");
     }
 
     @Test
     public void _6_convertingEvents() {
         mStringA = "";
         Observable.just("wE", "hOpe", "yOU", "aRe", "eNjOyInG", "thIS")
-            .map(s -> _____)
-            .map(s -> _____)
+            .map(String::toLowerCase)
+            .map(s -> s + " ")
+            .cast(Integer.class)
             .subscribe(s -> mStringA += s);
 
         assertThat(mStringA).isEqualTo("we hope you are enjoying this ");

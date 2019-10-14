@@ -12,27 +12,41 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(VertxExtension.class)
 public class VertxFunctionalityTests {
 
-    Verticle _____;
+    private Verticle _____;
 
     @Test
-    void verticle_deployed(Vertx vertx, VertxTestContext testContext) {
-        vertx.deployVerticle(_____, testContext.succeeding(id -> testContext.completeNow()));
+    void verticleDeployed(Vertx vertx, VertxTestContext testContext) {
+        vertx.deployVerticle(new SucceedingVerticle(), ar -> {
+            if (ar.succeeded()) {
+                testContext.completeNow();
+            } else {
+                testContext.failNow(ar.cause());
+            }
+        });
     }
 
     @Test
     void failedDeployment(Vertx vertx, VertxTestContext testContext) {
-        vertx.deployVerticle(_____, testContext.failing(id -> testContext.completeNow()));
+        vertx.deployVerticle(new FailingVerticle(), ar -> {
+            if (ar.succeeded()) {
+                testContext.failNow(ar.cause());
+            } else {
+                testContext.completeNow();
+            }
+        });
     }
 
     public class SucceedingVerticle extends AbstractVerticle {
         @Override
         public void start(Promise<Void> startPromise) {
+            startPromise.complete();
         }
     }
 
     public class FailingVerticle extends AbstractVerticle {
         @Override
         public void start(Promise<Void> startPromise) {
+            startPromise.fail("Failed to deploy");
         }
     }
 
@@ -41,10 +55,12 @@ public class VertxFunctionalityTests {
         vertx.eventBus().consumer("address").handler(handler -> {
             testContext.completeNow();
         });
+
+        vertx.eventBus().send("address", "message");
     }
 
     @Test
-    void name(Vertx vertx, VertxTestContext testContext) {
+    void startHttpServer(Vertx vertx, VertxTestContext testContext) {
         vertx.createHttpServer()
             .requestHandler(req -> testContext.completeNow())
             .listen(8888, http -> {
